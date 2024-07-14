@@ -104,6 +104,10 @@
       &.logout{
         padding: 10px;
         background-color: #1a73e8;
+
+      &:hover {
+          background-color: rgba(23, 9, 222, 0.796);
+        }
       }
 
       &.remove{
@@ -127,4 +131,10 @@
 .detail::-webkit-scrollbar-thumb {
   background-color: rgba(17, 25, 40, 0.5);
   border-radius: 4px;
+}
+
+.dropdown{
+  a{
+  color:lightgray;
+  }
 }

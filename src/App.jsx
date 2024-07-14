@@ -10,13 +10,13 @@ import { useUserStore } from "./lib/userStore";
 import { useChatStore } from "./lib/chatStore";
 
 const App = () => {
+
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
   const { chatId } = useChatStore();
 
 
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, (user) => {
-      console.log("Auth state changed, user:", user);
       fetchUserInfo(user?.uid);
     });
   
@@ -31,7 +31,7 @@ const App = () => {
 
   return (
     <div className="container">
-      {currentUser ? (
+      {currentUser? (
         <>
           <List />
           {chatId && <Chat />}

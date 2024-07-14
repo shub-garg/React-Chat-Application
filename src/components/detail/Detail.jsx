@@ -11,6 +11,10 @@ const Detail = () => {
   const { currentUser } = useUserStore();
   const [isAvailable, setIsAvailable] = useState(user?.isavail);
   const [chatSettingsOpen, setChatSettingsOpen] = useState(false);
+  const [photosOpen, setPhotosOpen] = useState(false);
+  const [sharedPhotos, setSharedPhotos] = useState([]);
+  const [privacyHelpOpen, setPrivacyHelpOpen] = useState(false);
+
 
   useEffect(() => {
     if (!user) return;
@@ -22,6 +26,22 @@ const Detail = () => {
 
     return () => unsubscribe();
   }, [user]);
+
+
+  useEffect(() => {
+    if (!chatId) return;
+
+    const chatDocRef = doc(db, "chats", chatId);
+    const unsubscribe = onSnapshot(chatDocRef, (doc) => {
+      const messages = doc.data().messages || [];
+      const photos = messages.filter(message => message.img);
+      if (Array.isArray(photos)) {
+        setSharedPhotos(photos.slice(-3)); // Get last 3 photos
+      }
+    });
+
+    return () => unsubscribe();
+  }, [chatId]);
 
   const handleBlock = async () => {
     if (!user) return;
@@ -78,6 +98,21 @@ const Detail = () => {
     }
   };
 
+  const handleDownload = (url, name) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = name;
+    link.target = "_blank";
+    link.click();
+  };
+  
+
+
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+    return date.toLocaleString();
+  };
+
   return (
     <div className="detail">
       <div className="user">
@@ -97,54 +132,38 @@ const Detail = () => {
             </div>
           )}
         </div>
-        <div className="option">
-          <div className="title">
-            <span>Privacy & help</span>
-            <img src="./arrowUp.png" alt="" />
-          </div>
-        </div>
-        <div className="option">
-          <div className="title">
-            <span>Shared photos</span>
-            <img src="./arrowDown.png" alt="" />
-          </div>
-          <div className="photos">
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://images.pexels.com/photos/7381200/pexels-photo-7381200.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                  alt=""
-                />
-                <span>photo_2024_2.png</span>
-              </div>
-              <img src="./download.png" alt="" className="icon" />
-            </div>
-          </div>
-          <div className="photos">
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://images.pexels.com/photos/7381200/pexels-photo-7381200.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                  alt=""
-                />
-                <span>photo_2024_2.png</span>
-              </div>
-              <img src="./download.png" alt="" className="icon" />
-            </div>
-          </div>
-          <div className="photos">
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://images.pexels.com/photos/7381200/pexels-photo-7381200.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                  alt=""
-                />
-                <span>photo_2024_2.png</span>
-              </div>
-              <img src="./download.png" alt="" className="icon" />
-            </div>
-          </div>
-        </div>
+        <div className="option" onClick={() => setPrivacyHelpOpen(!privacyHelpOpen)}>
+  <div className="title">
+    <span>Privacy & help</span>
+    <img src={privacyHelpOpen ? "./arrowDown.png" : "./arrowUp.png"} alt="" />
+  </div>
+  {privacyHelpOpen && (
+    <div className="dropdown">
+      <a href="https://drive.google.com/file/d/18P-Y1QhdlCW1MmxcBGOvFPYmwv9qvHG2/view?usp=sharing" target="_blank" rel="noopener noreferrer" >Read about our privacy & help</a>
+    </div>
+  )}
+</div>
+
+        <div className="option" onClick={() => setPhotosOpen(!photosOpen)}>
+  <div className="title">
+    <span>Shared photos</span>
+    <img src={photosOpen ? "./arrowDown.png" : "./arrowUp.png"} alt="" />
+  </div>
+  {photosOpen && sharedPhotos.map((photo, index) => (
+  <div className="photos" key={index} onClick={(e) => e.stopPropagation()}>
+    <div className="photoItem">
+      <div className="photoDetail">
+        <img src={photo.img} alt="" />
+        <span>{formatDate(photo.createdAt)}</span>
+      </div>
+      <img src="./download.png" alt="" className="icon" onClick={() => handleDownload(photo.img, `photo_${index + 1}.png`)} />
+    </div>
+  </div>
+))}
+
+</div>
+
+
         <div className="option">
           <div className="title">
             <span>Shared Files</span>

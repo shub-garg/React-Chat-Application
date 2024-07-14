@@ -51,6 +51,8 @@ const Login = () => {
 
       const imgUrl = await upload(avatar.file);
 
+      setLoading(false);
+
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
@@ -64,7 +66,17 @@ const Login = () => {
         chats: [],
       });
 
-      toast.success("Account created! You can login now!");
+
+      await signInWithEmailAndPassword(auth, email, password);
+      await updateDoc(doc(db, "users", res.user.uid), {
+        isavail:true
+      });
+
+      toast.success("Account created!");
+
+      window.location.reload(); // Reload the page
+
+      
     } catch (err) {
       console.log(err);
       toast.error(err.message);
@@ -82,8 +94,6 @@ const Login = () => {
 
     try {
       const res = await signInWithEmailAndPassword(auth, email, password);
-      console.log(res);
-
       await updateDoc(doc(db, "users", res.user.uid), {
         isavail:true
       });
