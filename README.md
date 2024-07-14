@@ -25,7 +25,7 @@ A real-time chat application built with React and Firebase, featuring authentica
 - Responsive Design
 
 ## Demo
-Check out the live demo [here](https://www.chat.shubhamgarg.live/).
+Check out the live demo <a href="https://www.chat.shubhamgarg.live/" target="_blank">[here]</a>.
 
 ## Installation
 
