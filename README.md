@@ -6,7 +6,7 @@
 
 A real-time chat application built with React and Firebase, featuring authentication, real-time messaging, media sharing (images and audio), emoji picker, and camera integration.
 
-![ezgif com-optimize (1)](https://github.com/user-attachments/assets/d7ea7e61-9a53-49cb-9d98-d2ea2041f8c8)
+![ezgif com-optimize (2)](https://github.com/user-attachments/assets/7f2f44bc-66fd-4ce8-aba0-eec10dba450f)
 
 
 ## Table of Contents
